@@ -16,91 +16,98 @@
 // DO WHAT THE FUCK YOU WANT TO.                                //
 // -------------------------------------------------------------//
 
-#include <string>        // string
-#include <unordered_set> // unordered_set
-#include <fstream>       // ifstream
-#include <iostream>      // cin, cout
+#include "compiler.h"
+#include <regex> // regex, smatch
 using namespace std;
 
-unordered_set<char> var_set({'*', 'o', 'O', '^', '\'', '='});
-unordered_set<char> op_set({'_','-',';','.'});
-enum Type { PAREN, NUM, STRING};
-struct Token_Type {
-  Type t;
+// -----------
+// Lookup sets
+// -----------
 
+// All possible variable names
+unordered_set<string> var_set({"*", "o", "O", "^", "\"", "="});
 
-};
-
+// Operators
+unordered_set<string> op_set({
+    "_", // assignment
+    "-", // range
+    ";", // division
+    ".", // multiplication
+    "<", // less than
+    ">", // greater than
+    "<>" // equals
+});
 
 // ---------
 // tokenizer
 // ---------
 
-void tokenizer(ifstream& ifs) {
+void tokenizer(ifstream &ifs) {
   string input = "";
-  while(getline(ifs, input)) {
-    cout << "I: " << input << endl;
-  }
   int counter = 0;
-  string::iterator b = input.begin();
-  string::iterator e = input.end();
-  while(b != e) {
-    unordered_set<char>::const_iterator var_it = var_set.find(*b);
-    unordered_set<char>::const_iterator op_it = op_set.find(*b);
+  while (getline(ifs, input)) {         // Read input stream line by line
+    string::iterator b = input.begin(); // Beginning char of line
+    string::iterator e = input.end();   // Last char of line
+    // Parsing line
+    cout << "Line: " << input << endl;
+    while (b != e) {
+      cout << "b: " << *b << endl;
+      string c(1, *b);
+      smatch m;
+      // Check if operator or variable
+      unordered_set<string>::const_iterator var_it = var_set.find(c);
+      unordered_set<string>::const_iterator op_it = op_set.find(c);
+      /*
+       * Regex done in else statement to avoid unwanted regex matching if the
+       * character is an operator or variable
+       */
+      if (var_it != var_set.end()) { // Check for variable name *,o,O, etc.
+        ++b; // Advance iterator
 
-    if(var_it != var_set.end()) { // Check for variable name *,o,O, etc.
-      continue;
+      } else if (op_it != op_set.end()) { // Check for op name .
+        ++b; // Advance iterator
+
+      } else {
+        // Test if set of characters is a function
+        regex r_fn("(\\[>)...(\\]>)"); // function call ex: [>*_*]>
+        string fn = (b + 7 <= e) ? string(b, b + 7) : "";
+        if (!fn.empty() && regex_match(fn, m, r_fn)) {
+          cout << "function match" << endl;
+          b += 7; 
+        } else 
+          ++b;
+///// \[]/ ..... \(o_o)/\/(o-O)/
+        regex comment_one("(\\(#).(#\\))"); // one-line comment
+        regex comment_begin("");            // multi-line comment begin
+        regex comment_end("");              // multi-line comment end
+      }
     }
-    if(op_it != op_set.end()) { // Check for op name .
-      continue;
-    }
-    
-
-
-
   }
 }
-
 
 // ------
 // parser
 // ------
 
-void parser(string input) {
-
-}
-
+void parser(string input) {}
 
 // ---------
 // transform
 // ---------
 
-void transform(string input) {
-
-}
+void transform(string input) {}
 
 // --------
 // code_gen
 // --------
 
-void code_gen(string input) {
+void code_gen(string input) {}
 
-}
-
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   string file_name = argv[1];
   ifstream file(file_name);
   string input = "";
-  if(!file.good())
-    cout << "bad file read" << endl;
-
-  while(getline(file, input)) {
-    cout << "I: " << input << endl;
-  }
-  //if(file.is_open()) 
-  //  tokenizer(file);
+  if (file.is_open())
+    tokenizer(file);
   return 0;
 }
-
-
-
