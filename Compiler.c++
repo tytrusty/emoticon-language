@@ -54,7 +54,7 @@ vector<Token> tokenizer(ifstream &ifs) {
     string::iterator b = input.begin(); // Beginning char of line
     string::iterator e = input.end();   // Last char of line
     // Parsing line
-    cout << "Line: " << input << endl;
+    //cout << "Line: " << input << endl;
     while (b < e) {
       string c(1, *b);
       string line;
@@ -67,7 +67,7 @@ vector<Token> tokenizer(ifstream &ifs) {
         ++b;
         continue;
       }
-
+    
       // If currently in a multi-line comment, only look for end marker
       if (in_comment) {
         regex comment_end("\\*--(\\(#).(#\\))"); // multi-line comment end
@@ -81,8 +81,6 @@ vector<Token> tokenizer(ifstream &ifs) {
         continue;
       }
 
-      cout << "b: " << *b << endl;
-
       // Check if function definition start
       regex fn_beg("(\\[>)...(\\]>)--\\*"); // function call ex: [>*_*]>--*
       line = (b + 10 <= e) ? string(b, b + 10) : "";
@@ -94,6 +92,7 @@ vector<Token> tokenizer(ifstream &ifs) {
         b += 10;
         continue;
       }
+      
       // Check if end of function
       regex fn_end("\\*--(<\\[)...(<\\])");
       // line for function also 7 characters -- no need to re-call
@@ -164,8 +163,48 @@ vector<Token> tokenizer(ifstream &ifs) {
       if (!line.empty() && regex_match(line, m, comment_one)) {
         break; // If one-line comment, move onto next line
       }
-      
+
+      // Integer parsing
+      regex num("[0-9]");
+      if(regex_match(c, m, num)) {
+        bool is_num = true;
+        string val;
+        val.push_back(*b);
+        ++b;
+
+        // Keep iterating until character is not a numeral
+        while(b != e && is_num) {
+          c = string(1, *b);
+          if(regex_match(c, m, num)) {
+            val.push_back(*b);
+            ++b;
+          } else 
+            is_num = false;
+          
+        }
+        token._t = NUMBER;
+        token._val = val;
+        tokens.push_back(token);
+        continue;
+      }
+
       // String parsing
+      if(*b == '\"') {
+        ++b;
+        string::iterator x = b;
+        string val;
+
+        while(*x != '\"' && x != e) {
+          ++x;
+        }
+        val = string(b, x);
+        token._t = STRING;
+        token._val = val;
+        tokens.push_back(token);
+        b = x; // set b to now point after string
+      }
+
+
 
       // 
       ++b;
@@ -174,9 +213,6 @@ vector<Token> tokenizer(ifstream &ifs) {
     tokens.push_back(Token(EOL, "eol"));
   }
 
-  /*for (Token i : tokens) {
-    cout << "TOK " << i._t << " " << i._val << endl;
-  }*/
   return tokens;
 }
 
@@ -184,7 +220,10 @@ vector<Token> tokenizer(ifstream &ifs) {
 // parser
 // ------
 
-void parser(vector<Token> tokens) {
+void parser(vector<Token>& tokens) {
+  for (Token i : tokens) {
+    cout << "TOK " << i._t << " " << i._val << endl;
+  }
   
     
 }
@@ -201,7 +240,9 @@ int main(int argc, char **argv) {
   string file_name = argv[1];
   ifstream file(file_name);
   string input = "";
-  if (file.is_open())
+  if (file.is_open()) {
     vector<Token> tokens(tokenizer(file));
+    parser(tokens);
+  }
   return 0;
 }

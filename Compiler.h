@@ -17,7 +17,7 @@ using namespace std;
  * Type of token
  */
 enum Type {
-  NUM,
+  NUMBER,
   NAME,
   OPERATOR,
   FUNCTION,
