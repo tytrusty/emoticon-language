@@ -16,8 +16,10 @@
 // DO WHAT THE FUCK YOU WANT TO.                                //
 // -------------------------------------------------------------//
 
-#include "compiler.h"
-#include "node.h"
+#include <string>
+#include <iostream>
+#include "Compiler.h"
+#include "Node.h"
 using namespace std;
 
 // -----------
@@ -25,7 +27,7 @@ using namespace std;
 // -----------
 
 // All possible variable names
-unordered_set<string> var_set({"*", "o", "O", "^", "\"", "=", "x", "X", "t",
+unordered_set<string> var_set({"*", "o", "O", "^", "=", "x", "X", "t",
                                "T"});
 
 // Operators
@@ -43,7 +45,7 @@ unordered_set<string> op_set({
 // tokenizer
 // ---------
 
-void tokenizer(ifstream &ifs) {
+vector<Token> tokenizer(ifstream &ifs) {
   string input = "";
   bool in_comment = false;
   vector<Token> tokens;
@@ -58,6 +60,13 @@ void tokenizer(ifstream &ifs) {
       string line;
       smatch m;
       Token token;
+
+      // Skip whitespace
+      regex space("\\s");
+      if(regex_match(c, m, space)) {
+        ++b;
+        continue;
+      }
 
       // If currently in a multi-line comment, only look for end marker
       if (in_comment) {
@@ -155,29 +164,30 @@ void tokenizer(ifstream &ifs) {
       if (!line.empty() && regex_match(line, m, comment_one)) {
         break; // If one-line comment, move onto next line
       }
+      
+      // String parsing
 
+      // 
       ++b;
       //  \[]/ ..... \(o_o)/\/(o-O)/
     }
     tokens.push_back(Token(EOL, "eol"));
   }
 
-  for (Token i : tokens) {
+  /*for (Token i : tokens) {
     cout << "TOK " << i._t << " " << i._val << endl;
-  }
+  }*/
+  return tokens;
 }
 
 // ------
 // parser
 // ------
 
-void parser(string input) {}
-
-// ---------
-// transform
-// ---------
-
-void transform(string input) {}
+void parser(vector<Token> tokens) {
+  
+    
+}
 
 // --------
 // code_gen
@@ -186,10 +196,12 @@ void transform(string input) {}
 void code_gen(string input) {}
 
 int main(int argc, char **argv) {
+  if(argc < 2)
+    return 0;
   string file_name = argv[1];
   ifstream file(file_name);
   string input = "";
   if (file.is_open())
-    tokenizer(file);
+    vector<Token> tokens(tokenizer(file));
   return 0;
 }

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := test
 
-ifeq ($(shell uname), Darwin)                                           # Apple
+ifeq ($(shell uname), Compiler)                                           # Apple
     CXX          := g++
     INCLUDE      := /usr/local/include
     CXXFLAGS     := -pedantic -std=c++14 -I$(INCLUDE) -Wall -Weffc++
@@ -58,22 +58,34 @@ endif
 clean:
 	rm -f  *.bin
 	rm -f  *.db
+	rm -f  *.tmp
 	rm -f  *.gcda
 	rm -f  *.gcno
 	rm -f  *.gcov
 	rm -f  *.plist
-	rm -f  *.out
-	rm -f  compiler
+	rm -f  Compiler
+	rm -f  TestCompiler
     
 
 .PHONY: Compiler.tmp
 Compiler.tmp: Compiler
-	./compiler compiler.in > compiler.out
-	cat compiler.out
+	./Compiler compiler.in > Compiler.tmp
+	diff Compiler.tmp Compiler.out
 
 Compiler:
-	$(CXX) $(CXXFLAGS) compiler.c++ -o compiler
-	-$(CLANG-CHECK) -extra-arg=-std=c++11          compiler.c++     --
+	$(CXX) $(CXXFLAGS) Compiler.c++ -o Compiler
+	-$(CLANG-CHECK) -extra-arg=-std=c++11          Compiler.c++     --
+
+TestCompiler:
+	$(CXX) $(CXXFLAGS) $(GCOVFLAGS) TestCompiler.c++ Compiler.c++ -o TestCompiler $(LDFLAGS)
+	-$(CLANG-CHECK) -extra-arg=-std=c++11          TestCompiler.c++ --
+
+.PHONY: TestCompiler.tmp
+TestCompiler.tmp: TestCompiler
+	$(VALGRIND) ./TestCompiler                                       >  TestCompiler.tmp 2>&1
+	#-$(GCOV) -b Compiler.c++ | grep -A 5 "File 'Compiler.c++'"     >> TestCompiler.tmp
+	#-$(GCOV) -b TestCompiler.c++ | grep -A 5 "File 'TestCompiler.c++'" >> TestCompiler.tmp
+	cat TestCompiler.tmp
 
 config:
 	git config -l
@@ -95,12 +107,5 @@ status:
 	git remote -v
 	git status
 
-test: Compiler.tmp 
-	ls -al
-
-
-
-
-
-
+test: Compiler.tmp TestCompiler.tmp
 
