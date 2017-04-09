@@ -33,7 +33,8 @@ enum Type {
 struct Token {
   Type _t;
   string _val;
-  Token(Type t = Type(), string val = "") : _t(t), _val(val) {}
+  size_t _priority;
+  Token(Type t = Type(), string val = "", size_t priority = 0) : _t(t), _val(val), _priority(priority) {}
 };
 
 /**

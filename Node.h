@@ -12,54 +12,10 @@ using namespace std;
 // Forward declarations
 class Visitor;
 class Node;
-class Root_Node;     // Root node
+class Statement_Node;     // Statement node
 class Operator_Node; // Right now only binary operators
 class Value_Node;    // Can either be a variable name or an r-value
 class Call_Node;     // Function call
-
-/**
- * Visitor pattern abstract class
- */
-class Visitor {
-public:
-  virtual void visit(Root_Node &) = 0;
-  virtual void visit(Operator_Node &) = 0;
-  virtual void visit(Node &) = 0;
-  virtual void visit(Value_Node &) = 0;
-  virtual void visit(Call_Node &) = 0;
-  virtual ~Visitor() = 0;
-};
-
-/**
- *  Implementation of visitor
- */
-class AST_Visitor : Visitor {
-public:
-  /**
-   *  Iteratively visits and accepts the root's children
-   *  @param root the source node with a list of children
-   */
-  void visit(Root_Node &root) { cout << " Visited root " << endl; }
-
-  /**
-   * Visits the left, then right child
-   * @param op the operator node
-   */
-  void visit(Operator_Node &op) { cout << " visited op " << endl; }
-
-  /**
-   * Visit for identifier for value. Just prints the value
-   * @param val the value node
-   */
-  void visit(Value_Node &val) { cout << " visited val " << endl; }
-
-  /**
-   * Visit for function call node
-   * @param val the value node
-   */
-  void visit(Call_Node &val) { cout << " visited call " << endl; }
-
-};
 
 /**
  * Abstract Node class for Abstract Syntax Tree
@@ -70,7 +26,7 @@ public:
    * Vector of child node pointers
    */
   vector<Node> children;
-  
+
   /**
    * Default constructor
    */
@@ -85,16 +41,16 @@ public:
 };
 
 /**
- * Root node to serve as base node.
+ * Statement node to serve as base nodes.
  */
-class Root_Node : public Node {
+class Statement_Node : public Node {
 public:
   /**
    * Accept method as part of the visitor design patern.
    * @param v the visitor that this node is passed into
    */
   void accept(Visitor &v) { v.visit(*this); }
-  ~Root_Node() = default;
+  ~Statement_Node() = default;
 };
 
 /**
@@ -103,6 +59,9 @@ public:
  */
 class Operator_Node : public Node {
 public:
+  string _val;
+  size_t _priority;
+  Operator_Node(string val, size_t priority = 1) : _val(val), _priority(priority) {}
   /**
    * Accept method as part of the visitor design patern.
    * @param v the visitor that this node is passed into
@@ -145,4 +104,58 @@ public:
 
 class If_Node : public Node {};
 class While_Node : public Node {};
+
+/**
+ * Visitor pattern abstract class
+ */
+class Visitor {
+public:
+  /*virtual void visit(Statement_Node &) = 0;
+  virtual void visit(Operator_Node &) = 0;
+  virtual void visit(Node &) = 0;
+  virtual void visit(Value_Node &) = 0;
+  virtual void visit(Call_Node &) = 0;
+  */
+  virtual void visit(Statement_Node &) {}
+  virtual void visit(Operator_Node &) {}
+  virtual void visit(Node &) {}
+  virtual void visit(Value_Node &) {}
+  virtual void visit(Call_Node &) {}
+  virtual ~Visitor() {}
+};
+
+/**
+ *  Implementation of visitor
+ */
+class AST_Visitor : public Visitor {
+public:
+  /**
+   *  Iteratively visits and accepts the root's children
+   *  @param root the source node with a list of children
+   */
+  void visit(Statement_Node &root) { 
+    cout << " Visited root " << endl; 
+    root.child[0].accept(*this);
+  }
+
+  /**
+   * Visits the left, then right child
+   * @param op the operator node
+   */
+  void visit(Operator_Node &op) { cout << " visited op " << endl; }
+
+  /**
+   * Visit for identifier for value. Just prints the value
+   * @param val the value node
+   */
+  void visit(Value_Node &val) { cout << " visited val " << endl; }
+
+  /**
+   * Visit for function call node
+   * @param val the value node
+   */
+  void visit(Call_Node &val) { cout << " visited call " << endl; }
+
+};
+
 #endif // Node_h

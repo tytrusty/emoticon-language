@@ -143,6 +143,7 @@ vector<Token> tokenizer(ifstream &ifs) {
       if (op_it != op_set.end()) { // Check for op name .
         token._t = OPERATOR;
         token._val = *b;
+        token._priority = 1;
         tokens.push_back(token);
         ++b; // Advance iterator
         continue;
@@ -220,37 +221,53 @@ vector<Token> tokenizer(ifstream &ifs) {
 // ------
 
 void parser(vector<Token>& tokens) {
-  for (Token i : tokens) {
-    cout << "TOK " << i._t << " " << i._val << endl;
-  }
-  stack<Node> expr_stack;
-  stack<Node> op_stack;
-  Root_Node root; // Abstract Syntax Tree root
-  size_t i;
+  stack<Node> statements;
+  stack<Operator_Node> op_stack;
+  Statement_Node root; // Abstract Syntax Tree root
   
   // Build tree using Shunting-Yard Algorithm
-  while (i < tokens.size()) {
+  for(Token tok : tokens) {
+    cout << "TOK " << tok._t << " " << tok._val << endl;
     // No statement end indicator, just using EOL
-    if (tokens[i]._t == EOL) {
+    if (tok._t == EOL) {
+      cout << "EOL" << endl;
       // Clear stacks and add node to the root
-      root.children.push_back(expr_stack.pop());
+      root.children.push_back(statements.top());
+      statements.pop();     //TODO do this more efficiently, dummy
       stack<Node> empty_a;
-      stack<Node> empty_b;
-      swap(expr_stack, empty_a);
+      stack<Operator_Node> empty_b;
+      swap(statements, empty_a);
       swap(op_stack, empty_b);
     }
-    if(tokens[i]._t == OPERATOR) {
-      
+    if(tok._t == OPERATOR) {
+      cout << "OP" << endl;
+      while(!op_stack.empty() && op_stack.top()._priority >= tok._priority) {
+        Operator_Node op = op_stack.top();
+        op_stack.pop();
+        Node e2 = statements.top();
+        statements.pop();
+        Node e1 = statements.top();
+        statements.pop();
+        Statement_Node statement; 
+        statement.children.push_back(op);
+        statement.children.push_back(e1);
+        statement.children.push_back(e2);
+        statements.push(statement);
+      }
+        
+      op_stack.push(Operator_Node(tok._val));
     } 
-    else if(tokens[i]._t == NUMBER || tokens[i]._t == NAME || tokens[i]._t == STRING) {
-      expr_stack.push(Value_Node(tokens[i]._val));
+    else if(tok._t == NUMBER || tok._t == NAME || tok._t == STRING) {
+      cout << "Num/Name/String" << endl;
+      statements.push(Value_Node(tok._val));
     }
-    else if(tokens[i]._t == CALL) {
-      expr_stack.push(Call_Node(tokens[i]._val));
+    else if(tok._t == CALL) {
+      cout << "Call " << endl;
+      statements.push(Call_Node(tok._val));
     }
-    ++i;
   }
-  
+  AST_Visitor v;
+  root.accept(v); 
 
     
 }
