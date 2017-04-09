@@ -17,7 +17,7 @@
 // -------------------------------------------------------------//
 
 #include "compiler.h"
-#include <regex> // regex, smatch
+#include "node.h"
 using namespace std;
 
 // -----------
@@ -106,7 +106,7 @@ void tokenizer(ifstream &ifs) {
         b += 7;
         continue;
       }
-      
+
       // Check if function call
       regex r_fn("(\\[>)...(\\]>)"); // function call ex: [>*_*]>
       // line for function also 7 characters -- no need to re-call
@@ -157,8 +157,9 @@ void tokenizer(ifstream &ifs) {
       }
 
       ++b;
-      ///// \[]/ ..... \(o_o)/\/(o-O)/
+      //  \[]/ ..... \(o_o)/\/(o-O)/
     }
+    tokens.push_back(Token(EOL, "eol"));
   }
 
   for (Token i : tokens) {

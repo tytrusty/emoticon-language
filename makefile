@@ -81,6 +81,7 @@ config:
 format:
 	$(CLANG-FORMAT) -i compiler.c++
 	$(CLANG-FORMAT) -i compiler.h
+	$(CLANG-FORMAT) -i Node.h
 
 scrub:
 	make clean
