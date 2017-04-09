@@ -1,0 +1,3 @@
+# emoticon-language
+
+A really unintuitive language where everything is done with emoticons...
