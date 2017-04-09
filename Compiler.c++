@@ -18,6 +18,7 @@
 
 #include <string>
 #include <iostream>
+#include <stack>
 #include "Compiler.h"
 #include "Node.h"
 using namespace std;
@@ -120,7 +121,7 @@ vector<Token> tokenizer(ifstream &ifs) {
       // line for function also 7 characters -- no need to re-call
       if (!line.empty() && regex_match(line, m, r_fn)) {
         b += 7;
-        token._t = FUNCTION;
+        token._t = CALL;
         token._val = line;
         tokens.push_back(token);
         b += 7;
@@ -204,8 +205,6 @@ vector<Token> tokenizer(ifstream &ifs) {
         b = x; // set b to now point after string
       }
 
-
-
       // 
       ++b;
       //  \[]/ ..... \(o_o)/\/(o-O)/
@@ -224,7 +223,35 @@ void parser(vector<Token>& tokens) {
   for (Token i : tokens) {
     cout << "TOK " << i._t << " " << i._val << endl;
   }
+  stack<Node> expr_stack;
+  stack<Node> op_stack;
+  Root_Node root; // Abstract Syntax Tree root
+  size_t i;
   
+  // Build tree using Shunting-Yard Algorithm
+  while (i < tokens.size()) {
+    // No statement end indicator, just using EOL
+    if (tokens[i]._t == EOL) {
+      // Clear stacks and add node to the root
+      root.children.push_back(expr_stack.pop());
+      stack<Node> empty_a;
+      stack<Node> empty_b;
+      swap(expr_stack, empty_a);
+      swap(op_stack, empty_b);
+    }
+    if(tokens[i]._t == OPERATOR) {
+      
+    } 
+    else if(tokens[i]._t == NUMBER || tokens[i]._t == NAME || tokens[i]._t == STRING) {
+      expr_stack.push(Value_Node(tokens[i]._val));
+    }
+    else if(tokens[i]._t == CALL) {
+      expr_stack.push(Call_Node(tokens[i]._val));
+    }
+    ++i;
+  }
+  
+
     
 }
 

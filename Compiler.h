@@ -20,7 +20,7 @@ enum Type {
   NUMBER,
   NAME,
   OPERATOR,
-  FUNCTION,
+  CALL,
   FUNCTION_BEG,
   FUNCTION_END,
   STRING,

@@ -73,7 +73,7 @@ Compiler.tmp: Compiler
 	diff Compiler.tmp Compiler.out
 
 Compiler:
-	$(CXX) $(CXXFLAGS) Compiler.c++ -o Compiler
+	$(CXX) $(CXXFLAGS)  Compiler.c++ -o Compiler
 	-$(CLANG-CHECK) -extra-arg=-std=c++11          Compiler.c++     --
 
 TestCompiler:

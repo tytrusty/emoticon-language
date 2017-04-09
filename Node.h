@@ -69,7 +69,7 @@ public:
   /**
    * Vector of child node pointers
    */
-  vector<unique_ptr<Node>> children;
+  vector<Node> children;
   
   /**
    * Default constructor
@@ -80,27 +80,28 @@ public:
    * Abstract accept to be implemented in extensions of Node
    * @param v a visitor class
    */
-  virtual void accept(Visitor &v);
-  virtual ~Node() = 0;
+  virtual void accept(Visitor &v) {};
+  virtual ~Node() {};
 };
 
 /**
  * Root node to serve as base node.
  */
-class Root_Node : Node {
+class Root_Node : public Node {
 public:
   /**
    * Accept method as part of the visitor design patern.
    * @param v the visitor that this node is passed into
    */
   void accept(Visitor &v) { v.visit(*this); }
+  ~Root_Node() = default;
 };
 
 /**
  * Operator_Node used to represent binary operations. Element class intended to be
  * visited by visitor
  */
-class Operator_Node : Node {
+class Operator_Node : public Node {
 public:
   /**
    * Accept method as part of the visitor design patern.
@@ -113,7 +114,7 @@ public:
  * Value_Node for variable names and values. Element class intended to be visited by
  * visitor
  */
-class Value_Node : Node {
+class Value_Node : public Node {
 
 public:
   string _val;
@@ -126,7 +127,7 @@ public:
   void accept(Visitor &v) { v.visit(*this); }
 };
 
-class Call_Node : Node {
+class Call_Node : public Node {
 public:
   string _name;
   /**
@@ -142,6 +143,6 @@ public:
   void accept(Visitor &v) { v.visit(*this); }
 };
 
-class If_Node : Node {};
-class While_Node : Node {};
+class If_Node : public Node {};
+class While_Node : public Node {};
 #endif // Node_h
