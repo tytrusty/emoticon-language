@@ -15,13 +15,15 @@ using namespace std;
 /**
  * Type of token
  */
-enum Type { PAREN, NUM, STRING };
+enum Type { NUM, NAME, OPERATOR, FUNCTION, FUNCTION_BEG, FUNCTION_END, STRING };
 
 /**
  * Token struct used by tokenizer to create token list
  */
-struct Token_Type {
-  Type t;
+struct Token {
+  Token() : _t(), _val() {}
+  Type _t;
+  string _val;
 };
 
 void tokenizer(ifstream &ifs);
