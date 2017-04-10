@@ -1,31 +1,5 @@
-TOK 1 *
-TOK 7 eol
-TOK 1 *
-TOK 6 ABCDEFG
-TOK 1 *
-TOK 7 eol
-TOK 0 123123
-TOK 1 *
-TOK 0 321
-TOK 0 456
-TOK 7 eol
-TOK 3 [>o_o]>
-TOK 7 eol
-TOK 1 *
-TOK 7 eol
-TOK 1 *
-TOK 7 eol
-TOK 4 [>o_o]>--*
-TOK 7 eol
-TOK 1 *
-TOK 7 eol
-TOK 1 *
-TOK 7 eol
-TOK 5 *--<[*_*<]
-TOK 7 eol
-TOK 1 o
-TOK 2 \(^-^)/
-TOK 7 eol
-TOK 7 eol
-TOK 7 eol
-TOK 7 eol
+in parser 
+NODE: 0
+ visited val: o
+ visited op 
+ visited val: 5

@@ -91,8 +91,8 @@ config:
 	git config -l
 
 format:
-	$(CLANG-FORMAT) -i compiler.c++
-	$(CLANG-FORMAT) -i compiler.h
+	$(CLANG-FORMAT) -i Compiler.c++
+	$(CLANG-FORMAT) -i Compiler.h
 	$(CLANG-FORMAT) -i Node.h
 
 scrub:

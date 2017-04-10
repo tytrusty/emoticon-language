@@ -11,31 +11,9 @@
 #include <regex>         // regex, smatch
 #include <string>        // string
 #include <unordered_set> // unordered_set
+#include "Node.h"
+#include "Token.h"
 using namespace std;
-
-/**
- * Type of token
- */
-enum Type {
-  NUMBER,
-  NAME,
-  OPERATOR,
-  CALL,
-  FUNCTION_BEG,
-  FUNCTION_END,
-  STRING,
-  EOL
-};
-
-/**
- * Token struct used by tokenizer to create token list
- */
-struct Token {
-  Type _t;
-  string _val;
-  size_t _priority;
-  Token(Type t = Type(), string val = "", size_t priority = 0) : _t(t), _val(val), _priority(priority) {}
-};
 
 /**
  * Reads from input stream and produces a list of the tokens with their
@@ -49,7 +27,7 @@ vector<Token> tokenizer(ifstream &ifs);
  * Parses the token list and produces an Abstract Syntax Tree
  * @param tokens a vector containing token structs
  */
-void parser(vector<Token> &tokens);
+Statement_Node parser(vector<Token> &tokens);
 void code_gen(string input);
 
 #endif // compiler_h
