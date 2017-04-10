@@ -142,7 +142,7 @@ public:
       root.left ->accept(*this);
       root.op.accept(*this);
       root.right->accept(*this);
-      out << endl;
+      out << ";" << endl;
     }
   }
 
