@@ -181,6 +181,21 @@ public:
   void accept(Visitor &v) { v.visit(*this); }
 };
 
+class Function_Node : public Node {
+public:
+  string _name;
+  /**
+   * Default constructor
+   * @param name the function call name
+   */
+  Function_Node(string name) : _name(name) {}
+
+  /**
+   * Accept method as part of the visitor design patern.
+   * @param v the visitor that this node is passed into
+   */
+  void accept(Visitor &v) { v.visit(*this); }
+};
 class If_Node : public Node {};
 class While_Node : public Node {};
 

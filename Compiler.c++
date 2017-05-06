@@ -202,14 +202,21 @@ vector<Token> tokenizer(ifstream &ifs) {
 
 Statement_Node parser(vector<Token> &tokens) {
   cout << "in parser " << endl;
+  /* 
+   * scope stack indicates the current level of depth.
+   * For example when a function definition is encountered, 
+   * I want all the statements to be elements within the
+   * current function definition.
+   */
+  stack<shared_ptr<Node>> scope; 
   stack<shared_ptr<Node>> operands;
   stack<Operator_Node> operators;
-  //shared_ptr<Statement_Node> root; // Abstract Syntax Tree root
-  Statement_Node root;
+  shared_ptr<Statement_Node> root(new Statement_Node); // Abstract Syntax Tree root
+  //Statement_Node root;
+  scope.push(root);
   // Build tree using Shunting-Yard Algorithm
   for (Token tok : tokens) {
-    cout << tokens.size() << endl;
-    cout << "TOK " << tok._t << " " << tok._val << endl;
+    if(tok._t != EOL) cout << "TOK " << tok._t << " " << tok._val << endl;
     
     if (tok._t == EOL) { // EOL indicates end of current statement
       if(operators.size() < 1 || operands.size() < 2) continue;
@@ -222,11 +229,10 @@ Statement_Node parser(vector<Token> &tokens) {
       shared_ptr<Node> left = operands.top();
       operands.pop();
 
-      shared_ptr<Statement_Node> statement(new Statement_Node(op, left, right));
-      root.children.push_back(statement);
-  
+      shared_ptr<Node> statement(new Statement_Node(op, left, right));
+      scope.top()->children.push_back(statement);
+
     } else if (tok._t == OPERATOR) {
-      cout << "op" << endl;
       // Build sub-trees based on operator precidence
       while (!operators.empty() && operators.top()._priority >= tok._priority) {
         Operator_Node op(operators.top()); // Get operator
@@ -253,12 +259,19 @@ Statement_Node parser(vector<Token> &tokens) {
       operands.push(value);
     
     } else if (tok._t == CALL) {
+      cout << "CALL" << endl;
       // operands.push(Call_Node(tok._val));
+    } else if (tok._t == FUNCTION_BEG) {
+      cout << "Function definition begin " << endl;
+      //scope.push(new Function_Node(tok._val.substr(2,3)));
+    } else if (tok._t == FUNCTION_END) {
+      //scope.pop();
+
     } else {
       cout << "else" << endl;
     }
   }
-  return root;
+  return *root.get();
 }
 
 // --------
