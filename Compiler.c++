@@ -200,8 +200,7 @@ vector<Token> tokenizer(ifstream &ifs) {
 // parser
 // ------
 
-Statement_Node parser(vector<Token> &tokens) {
-  cout << "in parser " << endl;
+shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
   /* 
    * scope stack indicates the current level of depth.
    * For example when a function definition is encountered, 
@@ -212,11 +211,10 @@ Statement_Node parser(vector<Token> &tokens) {
   stack<shared_ptr<Node>> operands;
   stack<Operator_Node> operators;
   shared_ptr<Statement_Node> root(new Statement_Node); // Abstract Syntax Tree root
-  //Statement_Node root;
   scope.push(root);
   // Build tree using Shunting-Yard Algorithm
   for (Token tok : tokens) {
-    if(tok._t != EOL) cout << "TOK " << tok._t << " " << tok._val << endl;
+    /*if(tok._t != EOL)*/ cout << "TOK " << tok._t << " " << tok._val << endl;
     
     if (tok._t == EOL) { // EOL indicates end of current statement
       if(operators.size() < 1 || operands.size() < 2) continue;
@@ -230,8 +228,7 @@ Statement_Node parser(vector<Token> &tokens) {
       operands.pop();
 
       shared_ptr<Node> statement(new Statement_Node(op, left, right));
-      scope.top()->children.push_back(statement);
-
+      scope.top()->add_child(statement);
     } else if (tok._t == OPERATOR) {
       // Build sub-trees based on operator precidence
       while (!operators.empty() && operators.top()._priority >= tok._priority) {
@@ -244,10 +241,7 @@ Statement_Node parser(vector<Token> &tokens) {
         shared_ptr<Node> left = operands.top(); // Get left value
         operands.pop();
 
-        shared_ptr<Statement_Node> statement(new Statement_Node());
-        statement->op = op;
-        statement->left = left;
-        statement->right = right;
+        shared_ptr<Statement_Node> statement(new Statement_Node(op, left, right));
         operands.push(statement);
       }
 
@@ -262,25 +256,28 @@ Statement_Node parser(vector<Token> &tokens) {
       cout << "CALL" << endl;
       // operands.push(Call_Node(tok._val));
     } else if (tok._t == FUNCTION_BEG) {
-      cout << "Function definition begin " << endl;
-      //scope.push(new Function_Node(tok._val.substr(2,3)));
+      shared_ptr<Function_Node> tmp(new Function_Node(tok._val.substr(2,3)));
+      scope.top()->add_child(tmp);
     } else if (tok._t == FUNCTION_END) {
-      //scope.pop();
+      // Create a final node for the current scope. Indicates function defintion end. 
+      shared_ptr<Function_Node> tmp(new Function_Node(tok._val.substr(5,3), true));
+      scope.top()->add_child(tmp); 
+      scope.pop();
 
     } else {
       cout << "else" << endl;
     }
   }
-  return *root.get();
+  return root;
 }
 
 // --------
 // code_gen
 // --------
 
-void code_gen(Statement_Node root, ofstream& out) {
+void code_gen(shared_ptr<Statement_Node> root, ofstream& out) {
   AST_Visitor v(out);
-  root.accept(v);
+  root->accept(v);
   
 }
 
@@ -293,7 +290,7 @@ int main(int argc, char **argv) {
   string input = "";
   if (file.is_open()) {
     vector<Token> tokens(tokenizer(file));
-    Statement_Node root = parser(tokens);
+    shared_ptr<Statement_Node> root = parser(tokens);
     code_gen(root, outfile);
   }
   return 0;

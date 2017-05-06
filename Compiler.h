@@ -6,13 +6,14 @@
 #ifndef compiler_h
 #define compiler_h
 
+#include "Node.h"
+#include "Token.h"
 #include <fstream>       // ifstream
 #include <iostream>      // cin, cout
+#include <memory>        // shared_ptr
 #include <regex>         // regex, smatch
 #include <string>        // string
 #include <unordered_set> // unordered_set
-#include "Node.h"
-#include "Token.h"
 using namespace std;
 
 /**
@@ -27,7 +28,7 @@ vector<Token> tokenizer(ifstream &ifs);
  * Parses the token list and produces an Abstract Syntax Tree
  * @param tokens a vector containing token structs
  */
-Statement_Node parser(vector<Token> &tokens);
+shared_ptr<Statement_Node> parser(vector<Token> &tokens);
 void code_gen(string input);
 
 #endif // compiler_h

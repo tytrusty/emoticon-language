@@ -65,6 +65,7 @@ clean:
 	rm -f  *.plist
 	rm -f  Compiler
 	rm -f  TestCompiler
+	rm -f  compiler.in.c
     
 
 .PHONY: Compiler.tmp
