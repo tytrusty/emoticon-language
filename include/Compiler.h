@@ -9,11 +9,9 @@
 #include "Node.h"
 #include "Token.h"
 #include <fstream>       // ifstream
-#include <iostream>      // cin, cout
 #include <memory>        // shared_ptr
-#include <regex>         // regex, smatch
 #include <string>        // string
-#include <unordered_set> // unordered_set
+
 using namespace std;
 
 /**

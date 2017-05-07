@@ -16,9 +16,11 @@
 // DO WHAT THE FUCK YOU WANT TO.                                //
 // -------------------------------------------------------------//
 
-#include "Compiler.h"
-#include "Node.h"
-#include "Token.h"
+#include "../include/Compiler.h"
+#include "../include/Node.h"
+#include "../include/Token.h"
+#include <unordered_set>
+#include <regex>
 #include <iostream>
 #include <stack>
 #include <string>

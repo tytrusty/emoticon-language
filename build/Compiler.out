@@ -1,0 +1,35 @@
+TOK 7 eol
+TOK 7 eol
+TOK 7 eol
+TOK 7 eol
+TOK 1 o
+num
+TOK 2 =
+TOK 0 5
+num
+TOK 7 eol
+TOK 7 eol
+TOK 4 [>*_*]>--*
+TOK 7 eol
+TOK 7 eol
+TOK 1 O
+num
+TOK 2 =
+TOK 0 5
+num
+TOK 7 eol
+TOK 7 eol
+TOK 5 *--<[*_*<]
+TOK 7 eol
+NODE: 0
+Visited VAL: o
+Visited OP: =
+Visited VAL: 5
+NODE: 0
+Visiting fn: *_*
+NODE: 0
+Visited VAL: O
+Visited OP: =
+Visited VAL: 5
+NODE: 0
+Visiting fn: *_*

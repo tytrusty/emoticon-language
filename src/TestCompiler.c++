@@ -9,7 +9,7 @@
 
 #include <string>
 #include "gtest/gtest.h"
-#include "Compiler.h"
+#include "../include/Compiler.h"
 using namespace std;
 
 TEST(LexFixture, test_lex) {
