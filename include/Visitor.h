@@ -6,16 +6,16 @@
 #ifndef Visitor_h
 #define Visitor_h
 
-#include "Token.h"       // Token
-#include <fstream>       // ifstream
+#include "Token.h" // Token
+#include <fstream> // ifstream
 //#include <memory>
 //#include <vector>
 //#include <iostream>
-#include <string> 
+#include <string>
 
 // Forward declarations
 class Visitor;
-class Node;           // Abstract node class   
+class Node;           // Abstract node class
 class Statement_Node; // Statement node
 class Operator_Node;  // Right now only binary operators
 class Value_Node;     // Can either be a variable name or an r-value
@@ -28,10 +28,10 @@ class Function_Node;  // Function definition begin or end
 class Visitor {
 public:
   virtual void visit(Statement_Node &) = 0;
-  virtual void visit(Operator_Node &)  = 0;
-  virtual void visit(Function_Node &)  = 0; 
-  virtual void visit(Value_Node &)     = 0;
-  virtual void visit(Call_Node &)      = 0;
+  virtual void visit(Operator_Node &) = 0;
+  virtual void visit(Function_Node &) = 0;
+  virtual void visit(Value_Node &) = 0;
+  virtual void visit(Call_Node &) = 0;
   virtual ~Visitor() {}
 };
 

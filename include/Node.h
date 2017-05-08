@@ -6,13 +6,13 @@
 #ifndef Node_h
 #define Node_h
 
-#include <fstream>   // ifstream
-#include <memory>    // shared_ptr
-#include <vector>    // vector
-#include <iostream>  // ostream
-#include <string>    // string 
 #include "Token.h"
 #include "Visitor.h"
+#include <fstream>  // ifstream
+#include <iostream> // ostream
+#include <memory>   // shared_ptr
+#include <string>   // string
+#include <vector>   // vector
 using namespace std;
 
 /**
@@ -79,7 +79,7 @@ public:
    * operator in expression
    */
   Operator_Node op;
-  
+
   /**
    * left operand in expression
    */
@@ -102,7 +102,7 @@ public:
   Statement_Node(Operator_Node o = Operator_Node(),
                  shared_ptr<Node> lhs = nullptr, shared_ptr<Node> rhs = nullptr)
       : op(o), left(lhs), right(rhs) {}
-  
+
   ~Statement_Node() = default;
 };
 
@@ -127,14 +127,14 @@ public:
 class Function_Node : public Node {
 public:
   /**
-   * String identifier for this node. 
+   * String identifier for this node.
    */
   string _name;
-  
+
   /*
    * Indicates if this node represents the end of a function definition.
    */
-  bool is_end; 
+  bool is_end;
 
   /**
    * Default constructor

@@ -19,11 +19,11 @@
 #include "../include/Compiler.h"
 #include "../include/Node.h"
 #include "../include/Token.h"
-#include <unordered_set>
-#include <regex>
 #include <iostream>
+#include <regex>
 #include <stack>
 #include <string>
+#include <unordered_set>
 using namespace std;
 
 // -----------
@@ -203,23 +203,25 @@ vector<Token> tokenizer(ifstream &ifs) {
 // ------
 
 shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
-  /* 
+  /*
    * scope stack indicates the current level of depth.
-   * For example when a function definition is encountered, 
+   * For example when a function definition is encountered,
    * I want all the statements to be elements within the
    * current function definition.
    */
-  stack<shared_ptr<Node>> scope; 
+  stack<shared_ptr<Node>> scope;
   stack<shared_ptr<Node>> operands;
   stack<Operator_Node> operators;
-  shared_ptr<Statement_Node> root(new Statement_Node); // Abstract Syntax Tree root
+  shared_ptr<Statement_Node> root(
+      new Statement_Node); // Abstract Syntax Tree root
   scope.push(root);
   // Build tree using Shunting-Yard Algorithm
   for (Token tok : tokens) {
     /*if(tok._t != EOL)*/ cout << "TOK " << tok._t << " " << tok._val << endl;
-    
+
     if (tok._t == EOL) { // EOL indicates end of current statement
-      if(operators.size() < 1 || operands.size() < 2) continue;
+      if (operators.size() < 1 || operands.size() < 2)
+        continue;
       // Pop operator off operator stack
       Operator_Node op(operators.top());
       operators.pop();
@@ -243,7 +245,8 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
         shared_ptr<Node> left = operands.top(); // Get left value
         operands.pop();
 
-        shared_ptr<Statement_Node> statement(new Statement_Node(op, left, right));
+        shared_ptr<Statement_Node> statement(
+            new Statement_Node(op, left, right));
         operands.push(statement);
       }
 
@@ -253,17 +256,19 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
       cout << "num" << endl;
       shared_ptr<Value_Node> value(new Value_Node(tok));
       operands.push(value);
-    
+
     } else if (tok._t == CALL) {
       cout << "CALL" << endl;
       // operands.push(Call_Node(tok._val));
     } else if (tok._t == FUNCTION_BEG) {
-      shared_ptr<Function_Node> tmp(new Function_Node(tok._val.substr(2,3)));
+      shared_ptr<Function_Node> tmp(new Function_Node(tok._val.substr(2, 3)));
       scope.top()->add_child(tmp);
     } else if (tok._t == FUNCTION_END) {
-      // Create a final node for the current scope. Indicates function defintion end. 
-      shared_ptr<Function_Node> tmp(new Function_Node(tok._val.substr(5,3), true));
-      scope.top()->add_child(tmp); 
+      // Create a final node for the current scope. Indicates function defintion
+      // end.
+      shared_ptr<Function_Node> tmp(
+          new Function_Node(tok._val.substr(5, 3), true));
+      scope.top()->add_child(tmp);
       scope.pop();
 
     } else {
@@ -277,10 +282,9 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
 // code_gen
 // --------
 
-void code_gen(shared_ptr<Statement_Node> root, ofstream& out) {
+void code_gen(shared_ptr<Statement_Node> root, ofstream &out) {
   AST_Visitor v(out);
   root->accept(v);
-  
 }
 
 int main(int argc, char **argv) {

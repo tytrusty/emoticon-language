@@ -8,9 +8,9 @@
 
 #include "Node.h"
 #include "Token.h"
-#include <fstream>       // ifstream
-#include <memory>        // shared_ptr
-#include <string>        // string
+#include <fstream> // ifstream
+#include <memory>  // shared_ptr
+#include <string>  // string
 
 using namespace std;
 

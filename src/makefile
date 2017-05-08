@@ -95,11 +95,13 @@ config:
 	git config -l
 
 format:
+	$(CLANG-FORMAT) -i ../include/Compiler.h
+	$(CLANG-FORMAT) -i ../include/Node.h
+	$(CLANG-FORMAT) -i ../include/Token.h
+	$(CLANG-FORMAT) -i ../include/Visitor.h
+	$(CLANG-FORMAT) -i TestCompiler.c++
 	$(CLANG-FORMAT) -i Compiler.c++
-	$(CLANG-FORMAT) -i Compiler.h
-	$(CLANG-FORMAT) -i Node.h
-	$(CLANG-FORMAT) -i Visitor.h
-	$(CLANG-FORMAT) -i Token.h
+	$(CLANG-FORMAT) -i Visitor.c++
 
 scrub:
 	make clean
