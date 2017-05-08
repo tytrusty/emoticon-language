@@ -213,13 +213,13 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
   stack<shared_ptr<Node>> operands;
   stack<Operator_Node> operators;
   shared_ptr<Statement_Node> root(
-      new Statement_Node); // Abstract Syntax Tree root
+      new Statement_Node); // Syntax Tree root
   scope.push(root);
+  bool in_expression = false;
   // Build tree using Shunting-Yard Algorithm
   for (Token tok : tokens) {
-    /*if(tok._t != EOL)*/ cout << "TOK " << tok._t << " " << tok._val << endl;
-
-    if (tok._t == EOL) { // EOL indicates end of current statement
+    ///*if(tok._t != EOL)*/ cout << "TOK " << tok._t << " " << tok._val << endl;
+    if (tok._t == EOL && in_expression) { // EOL indicates end of current statement
       if (operators.size() < 1 || operands.size() < 2)
         continue;
       // Pop operator off operator stack
@@ -230,11 +230,13 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
       operands.pop();
       shared_ptr<Node> left = operands.top();
       operands.pop();
-
       shared_ptr<Node> statement(new Statement_Node(op, left, right));
       scope.top()->add_child(statement);
+      in_expression = false;
+
     } else if (tok._t == OPERATOR) {
       // Build sub-trees based on operator precidence
+      in_expression = true;
       while (!operators.empty() && operators.top()._priority >= tok._priority) {
         Operator_Node op(operators.top()); // Get operator
         operators.pop();
@@ -249,20 +251,23 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
             new Statement_Node(op, left, right));
         operands.push(statement);
       }
-
       operators.push(Operator_Node(tok._val, tok._priority));
 
     } else if (tok._t == NUMBER || tok._t == NAME || tok._t == STRING) {
-      cout << "num" << endl;
       shared_ptr<Value_Node> value(new Value_Node(tok));
       operands.push(value);
 
     } else if (tok._t == CALL) {
-      cout << "CALL" << endl;
-      // operands.push(Call_Node(tok._val));
+      //TODO functin all should be able to be an operand
+      // Right now only procedure calls exist... no bueno
+      shared_ptr<Call_Node> tmp(new Call_Node(tok._val.substr(2, 3)));
+      scope.top()->add_child(tmp);
+
     } else if (tok._t == FUNCTION_BEG) {
       shared_ptr<Function_Node> tmp(new Function_Node(tok._val.substr(2, 3)));
       scope.top()->add_child(tmp);
+      scope.push(tmp);
+
     } else if (tok._t == FUNCTION_END) {
       // Create a final node for the current scope. Indicates function defintion
       // end.
@@ -272,7 +277,7 @@ shared_ptr<Statement_Node> parser(vector<Token> &tokens) {
       scope.pop();
 
     } else {
-      cout << "else" << endl;
+      // cout << "else" << endl;
     }
   }
   return root;

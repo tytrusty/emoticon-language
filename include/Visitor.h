@@ -8,10 +8,8 @@
 
 #include "Token.h" // Token
 #include <fstream> // ifstream
-//#include <memory>
-//#include <vector>
-//#include <iostream>
-#include <string>
+#include <string>  // string
+#include <unordered_map> // unordered_map
 
 // Forward declarations
 class Visitor;
@@ -39,9 +37,20 @@ public:
  *  Implementation of visitor
  */
 class AST_Visitor : public Visitor {
-public:
+
+private:
+  /**
+   * output stream where translated code is written to
+   */
   ofstream &out;
-  AST_Visitor(ofstream &output) : out(output) {}
+
+  /**
+   * hash map pairing function/var names with their scope levels
+   */
+  unordered_map<string, int> scope_map;
+  
+public:
+  AST_Visitor(ofstream &output) : out(output), scope_map() {}
 
   /**
    *  Iteratively visits and accepts the root's children

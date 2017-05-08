@@ -11,6 +11,7 @@
 #include <vector>   // vector
 
 void AST_Visitor::visit(Statement_Node &root) {
+  // cout << "Scope level: " << root.get_depth() << endl;
   // If children is not empty, then statement contains a list of other
   // statements
   if (root.children.size() > 0) {
@@ -20,7 +21,8 @@ void AST_Visitor::visit(Statement_Node &root) {
       cout << "NODE: " << n->children.size() << endl;
       n->accept(*this);
     }
-  } else {
+  }
+  else {
     // TODO temp lulz
     out << "int ";
     root.left->accept(*this);
@@ -52,12 +54,19 @@ void AST_Visitor::visit(Value_Node &v) {
  * Visit for function call node
  * @param val the value node
  */
-void AST_Visitor::visit(Call_Node &val) {
-  std::cout << " visited call " << endl;
+void AST_Visitor::visit(Call_Node &fn) {
+  hash<string> hash_fn;
+  string hash_name = "a" + to_string(hash_fn(fn._name));
+  //int depth = scope_map[hash_name];//cout << " Visited CALL: " << hash_name << endl;
+  // If call's depth is not deeper than 
+  //TODO THIS IS NOT A VALID SOLUTION
+  // NEED A LIST ASSOCIATED WITH EACH PARENT
+  // You can have multiple functions/vars at the same depth value, but 
+  // in a different scope. 
+  out << hash_name << "();" << endl;
 }
 
 void AST_Visitor::visit(Function_Node &fn) {
-  cout << "Visiting fn: " << fn._name << endl;
   if (fn.is_end) {
     out << "}" << endl; // close function definition
     return;
@@ -71,6 +80,8 @@ void AST_Visitor::visit(Function_Node &fn) {
    */
   hash<string> hash_fn;
   string hash_name = "a" + to_string(hash_fn(fn._name));
+  scope_map[hash_name] = fn.get_depth(); 
+  cout << "Visiting FUNCTION: " << hash_name << endl;
   out << "void " << hash_name << "() {" << endl;
   if (fn.children.size() > 0) {
     for (shared_ptr<Node> n : fn.children) {

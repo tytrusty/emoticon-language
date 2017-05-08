@@ -8,6 +8,7 @@
 
 #include "Token.h"
 #include "Visitor.h"
+
 #include <fstream>  // ifstream
 #include <iostream> // ostream
 #include <memory>   // shared_ptr
@@ -19,32 +20,47 @@ using namespace std;
  * Abstract Node class for Abstract Syntax Tree
  */
 class Node {
-
   friend AST_Visitor;
 
-public:
+private:
   /**
    * Vector of child node pointers
    */
   vector<shared_ptr<Node>> children;
+
+protected:
+  /**
+   * Current depth in the tree. This is used when establishing the scope of a function or variable
+   */
+  int depth;
 
 public:
   /**
    * Abstract accept to be implemented in extensions of Node
    * @param v a visitor class
    */
-  virtual void accept(Visitor &v) { cout << " Visited Node " << endl; };
+  virtual void accept(Visitor &v) = 0; 
 
   /**
    * Adds node to children vector
    * @param node to be added
    */
-  void add_child(shared_ptr<Node> node) { children.push_back(node); }
+  void add_child(shared_ptr<Node> node) { 
+    children.push_back(node); 
+    node->depth = depth + 1;
+  }
+  
+  /**
+   * Returns the depth value
+   */
+  int get_depth() {
+    return depth;
+  }
 
   /**
    * Default constructor
    */
-  Node() : children() {}
+  Node() : children(), depth(0) {}
 
   /**
    * Default destructor
@@ -146,7 +162,7 @@ public:
    * Accept method as part of the visitor design patern.
    * @param v the visitor that this node is passed into
    */
-  void accept(Visitor &v) { v.visit(*this); }
+  void accept(Visitor &v) {v.visit(*this); }
 };
 
 class Call_Node : public Node {

@@ -1,11 +1,15 @@
-(#_#) this is a comment  o_o
-(#_#)--*
-  this is a multi-line comment
+(#_#) single line comment
+
+(#_#)--* 
+      this is a multi-line comment
 *--(#_#) 
-o \(^-^)/ 5   (#_#) This represents assignment: o = 5  untyped integer creation 
 
-[>*_*]>--*
+o \(^-^)/ 5   (#_#) Assignment: o = 5  untyped integer creation 
 
-O \(^-^)/ 5   (#_#) This represents assignment: o = 5  untyped integer creation 
+[>*_*]>--*    (#_#) Function definition 
+
+    O \(^-^)/ 5    
 
 *--<[*_*<]
+
+[>*_*]>       (#_#) Function call
