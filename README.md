@@ -3,10 +3,10 @@
 #### A really unintuitive language where everything is done with emoticons...
 
 Somewhat functional components:
-Comments
-Assignment
-Function definition
-Function calls
+Comments, 
+Assignment, 
+Function definition, 
+Function calls 
 
 Example:
 ```
