@@ -33,4 +33,4 @@ void a322902113347406966() {
 
 a322902113347406966();
 ```
-Function calls produce jumbled up c-function names because the name "*_*" wouldn't compile. So my easy solution is just to hash the string and use that as the name in c. 
+Function calls produce jumbled up c-function names because this language allows functions to use any character for its names. So my easy solution is just to hash the string and use that as the name in c. 
