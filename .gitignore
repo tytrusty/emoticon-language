@@ -1,0 +1,10 @@
+*.bin
+*.db
+*.tmp
+*.gcda
+*.gcno
+*.gcov
+*.plist
+Compiler
+TestCompiler
+compiler.in.c
