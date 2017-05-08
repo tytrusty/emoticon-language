@@ -2,7 +2,11 @@
 
 #### A really unintuitive language where everything is done with emoticons...
 
-Not much is implemented right now, but basic integer assignment and comments are working.
+Somewhat functional components:
+Comments
+Assignment
+Function definition
+Function calls
 
 Example:
 ```
